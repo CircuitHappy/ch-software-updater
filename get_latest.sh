@@ -30,12 +30,12 @@ fi
 
 
 #uncomment this after
-#wget -O /tmp/missing-link-update.zip.md5 http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip.md5
-#if [ $? != 0 ]; 
-#then
-#   die "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip.md5, bailing."
-#fi
-#
+wget -O /tmp/missing-link-update.zip.md5 http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip.md5
+if [ $? != 0 ]; 
+then
+   die "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip.md5, bailing."
+fi
+
 
 # make md5 file like this
 #[majer@prod ~]$ md5sum foozle.zip > foozle.zip.md5
