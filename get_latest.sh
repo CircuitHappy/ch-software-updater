@@ -1,6 +1,6 @@
 #! /bin/bash
-
-set -x
+#debug mode
+#set -x
 
 warn () {
     echo "$0:" "$@" >&2
