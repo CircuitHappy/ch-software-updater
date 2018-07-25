@@ -21,7 +21,7 @@ then
    #mv $CH_ROOT/${release_ver} $CH_ROOT/${release_ver}.`date +%s`
 fi
 
-wget -O /tmp/missing-link-update.zip http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip
+wget -O /tmp/missing-link-update-$release_ver.zip http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip
 if [ $? != 0 ]; 
 then
    die "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip, bailing."
@@ -30,7 +30,7 @@ fi
 
 
 #uncomment this after
-wget -O /tmp/missing-link-update.zip.md5 http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip.md5
+wget -O /tmp/missing-link-update-$release_ver.zip.md5 http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip.md5
 if [ $? != 0 ]; 
 then
    die "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip.md5, bailing."
@@ -43,21 +43,21 @@ fi
 #6749bb24f706bbd4141cba5ba1081e72  foozle.zip
 #
 
-expected_md5sum=`cat /tmp/missing-link-update.zip.md5 | awk '{print $1}'`
+expected_md5sum=`cat /tmp/missing-link-update-$release_ver.zip.md5 | awk '{print $1}'`
 
 if [ "x${expected_md5sum}" = "x" ];
 then
     die "the md5sum from the server was missing or corrupt, bailing."
 fi
 
-actual_md5sum=`md5sum /tmp/missing-link-update.zip | awk '{print $1}'`
+actual_md5sum=`md5sum /tmp/missing-link-update-$release_ver.zip | awk '{print $1}'`
 
 if [ ${expected_md5sum} != ${actual_md5sum} ];
 then
    die "the md5sum on the zip didn't match expected, bailing."
 fi
 
-unzip /tmp/missing-link-update.zip -d $CH_ROOT/ > /tmp/unzip.out 2>&1
+unzip /tmp/missing-link-update-$release_ver.zip -d $CH_ROOT/ > /tmp/unzip.out 2>&1
 if [ $? != 0 ]; 
 then
    die "unzip returned a non 0 exit code trying to extract the update (check /tmp/unzip.out), bailing."
