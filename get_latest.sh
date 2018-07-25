@@ -12,7 +12,7 @@ die () {
     exit $rc
 }
 
-CH_ROOT="/Users/majer/ch"
+CH_ROOT="/ch"
 
 release_ver=`wget -O- http://circuithappy.com/updates/missing-link/current.txt`
 echo "release version:" $release_ver
