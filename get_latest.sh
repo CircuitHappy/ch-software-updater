@@ -19,14 +19,14 @@ echo "release version:" $release_ver
 
 if [ -d $CH_ROOT/${release_ver} ];
 then
-   die "This system is at the latest version."
+   die 1 "This system is at the latest version."
    #mv $CH_ROOT/${release_ver} $CH_ROOT/${release_ver}.`date +%s`
 fi
 
 wget -O /tmp/missing-link-update-$release_ver.zip http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip
 if [ $? != 0 ]; 
 then
-   die "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip, bailing."
+   die 2 "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip, bailing."
 fi
 
 
@@ -35,7 +35,7 @@ fi
 wget -O /tmp/missing-link-update-$release_ver.zip.md5 http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip.md5
 if [ $? != 0 ]; 
 then
-   die "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip.md5, bailing."
+   die 2 "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip.md5, bailing."
 fi
 
 
@@ -49,20 +49,20 @@ expected_md5sum=`cat /tmp/missing-link-update-$release_ver.zip.md5 | awk '{print
 
 if [ "x${expected_md5sum}" = "x" ];
 then
-    die "the md5sum from the server was missing or corrupt, bailing."
+    die 3 "the md5sum from the server was missing or corrupt, bailing."
 fi
 
 actual_md5sum=`md5sum /tmp/missing-link-update-$release_ver.zip | awk '{print $1}'`
 
 if [ ${expected_md5sum} != ${actual_md5sum} ];
 then
-   die "the md5sum on the zip didn't match expected, bailing."
+   die 3 "the md5sum on the zip didn't match expected, bailing."
 fi
 
 unzip /tmp/missing-link-update-$release_ver.zip -d $CH_ROOT/ > /tmp/unzip.out 2>&1
 if [ $? != 0 ]; 
 then
-   die "unzip returned a non 0 exit code trying to extract the update (check /tmp/unzip.out), bailing."
+   die 4 "unzip returned a non 0 exit code trying to extract the update (check /tmp/unzip.out), bailing."
 fi
 
 rm $CH_ROOT/current 
@@ -75,5 +75,5 @@ fi
 ln -s $CH_ROOT/$release_ver $CH_ROOT/current
 if [ $? != 0 ] && [ ! -L $CH_ROOT/current ];
 then
-    die "unable to relink things, your system may be unusable after a reboot."
+    die 5 "unable to relink things, your system may be unusable after a reboot."
 fi
