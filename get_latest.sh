@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -x
+
 warn () {
     echo "$0:" "$@" >&2
 }
