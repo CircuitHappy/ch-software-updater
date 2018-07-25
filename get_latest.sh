@@ -17,8 +17,8 @@ echo "release version:" $release_ver
 
 if [ -d $CH_ROOT/${release_ver} ];
 then
-   warn "release version already exists, reinstalling"
-   mv $CH_ROOT/${release_ver} $CH_ROOT/${release_ver}.`date +%s`
+   die "This system is at the latest version."
+   #mv $CH_ROOT/${release_ver} $CH_ROOT/${release_ver}.`date +%s`
 fi
 
 wget -O /tmp/missing-link-update.zip http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip
