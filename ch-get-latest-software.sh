@@ -77,3 +77,9 @@ if [ $? != 0 ] && [ ! -L $CH_ROOT/current ];
 then
     die 5 "unable to relink things, your system may be unusable after a reboot."
 fi
+
+echo $release_ver > $CH_ROOT/version.txt
+if [ $? != 0 ]; 
+then
+   die 6 "Could not update version number file."
+fi
