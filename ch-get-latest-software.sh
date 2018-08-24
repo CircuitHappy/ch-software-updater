@@ -73,3 +73,9 @@ if [ $? != 0 ];
 then
    die 6 "Could not update version number file."
 fi
+
+if [ -f $CH_ROOT/${release_ver}/post.sh ];
+then
+   echo "I found post.sh."
+   #$CH_ROOT/${release_ver}/post.sh
+fi
