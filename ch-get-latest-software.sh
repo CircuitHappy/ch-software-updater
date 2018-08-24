@@ -29,21 +29,11 @@ then
    die 2 "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip, bailing."
 fi
 
-
-
-#uncomment this after
 wget -O /tmp/missing-link-update-$release_ver.zip.md5 http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip.md5
 if [ $? != 0 ]; 
 then
    die 2 "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip.md5, bailing."
 fi
-
-
-# make md5 file like this
-#[majer@prod ~]$ md5sum foozle.zip > foozle.zip.md5
-#[majer@prod ~]$ cat foozle.zip.md5
-#6749bb24f706bbd4141cba5ba1081e72  foozle.zip
-#
 
 expected_md5sum=`cat /tmp/missing-link-update-$release_ver.zip.md5 | awk '{print $1}'`
 
