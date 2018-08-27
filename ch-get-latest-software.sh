@@ -34,14 +34,14 @@ then
    die 2 "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip.md5, bailing."
 fi
 
-expected_md5sum=`/bin/cat /tmp/missing-link-update-$release_ver.zip.md5 | /usr/bin/awk '{/usr/bin/print $1}'`
+expected_md5sum=`/bin/cat /tmp/missing-link-update-$release_ver.zip.md5 | /usr/bin/awk '{print $1}'`
 
 if [ "x${expected_md5sum}" = "x" ];
 then
     die 3 "the md5sum from the server was missing or corrupt, bailing."
 fi
 
-actual_md5sum=`/usr/bin/md5sum /tmp/missing-link-update-$release_ver.zip | /usr/bin/awk '{/usr/bin/print $1}'`
+actual_md5sum=`/usr/bin/md5sum /tmp/missing-link-update-$release_ver.zip | /usr/bin/awk '{print $1}'`
 
 if [ ${expected_md5sum} != ${actual_md5sum} ];
 then
