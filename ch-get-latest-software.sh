@@ -75,6 +75,6 @@ fi
 
 if [ -f $CH_ROOT/${release_ver}/post.sh ];
 then
-   /bin/echo "I found post.sh."
-   #$CH_ROOT/${release_ver}/post.sh
+   /bin/echo "post.sh script found. running it."
+   $CH_ROOT/${release_ver}/post.sh
 fi
