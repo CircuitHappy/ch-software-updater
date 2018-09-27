@@ -18,9 +18,14 @@ CH_ROOT="/ch"
 if [ -d $CH_ROOT/current/new_system ]
 then
   new_system_name=`ls | sort -n | head -1`
-  if [ -d $CH_ROOT/current/new_system/$new_system_name = false ]
+  if [ ! -d $CH_ROOT/current/new_system/$new_system_name ]
   then
       die 1 "new_system doesn't contain a new system folder. bailing."
+  fi
+
+  if [ -d $CH_ROOT/current/new_system/$new_system_name ]
+  then
+    die 2 "$new_system_name already exists. bailing."
   fi
 
   /bin/mv -r $CH_ROOT/current/new_system/$new_system_name $CH_ROOT/system/
