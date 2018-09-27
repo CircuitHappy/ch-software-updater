@@ -12,6 +12,11 @@ die () {
     exit $rc
 }
 
+if [ ! -z "$1" ]
+then
+  release_server_root=$1
+fi
+
 current_txt_url=$release_server_root/current-system.txt
 
 # check if current.txt exists, then wget to pick up the current release version
