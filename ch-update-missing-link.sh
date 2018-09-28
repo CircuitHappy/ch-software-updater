@@ -125,7 +125,6 @@ then
     die 5 "unable to relink things, your system may be unusable after a reboot."
 fi
 
-#/bin/echo $release_ver > $CH_ROOT/version.txt
 /bin/cp /tmp/current.txt $CH_ROOT/version.txt
 if [ $? != 0 ];
 then
