@@ -12,6 +12,8 @@ die () {
     exit $rc
 }
 
+CH_ROOT="/ch"
+
 if [ ! -z "$1" ]
 then
   release_server_root=$1
@@ -45,13 +47,18 @@ else
 fi
 
 # if the current release is already installed and "current" is already linked to it, exit now
-if [ $release_directory_exists = true ] && [ $CH_ROOT/system/${release_ver} -ef $current_ln_path ];
+if [ "$release_directory_exists" = true ] && [ $CH_ROOT/system/${release_ver} -ef $current_ln_path ];
   then
    if [ -f $CH_ROOT/system/${release_ver}/post.sh ];
    then
      /bin/echo "post.sh script found. running it."
      /bin/sh $CH_ROOT/system/${release_ver}/post.sh
+     result=$?
      /bin/rm $CH_ROOT/system/${release_ver}/post.sh
+     if [ $result -eq "1" ]
+     then
+       die 0 "post.sh requires reboot."
+     fi
    fi
 
    die 1 "This system is at the latest version."
@@ -59,7 +66,7 @@ if [ $release_directory_exists = true ] && [ $CH_ROOT/system/${release_ver} -ef 
 fi
 
 # if the release directory doesn't exist, then download and install
-if [ $release_directory_exists = false ]
+if [ "$release_directory_exists" = false ]
 then
   /usr/bin/wget -O /tmp/missing-link-system-$release_ver.zip $release_server_root/missing-link-system-$release_ver.zip
   if [ $? != 0 ];
@@ -129,4 +136,5 @@ if [ -f $CH_ROOT/system/${release_ver}/post.sh ];
 then
    /bin/echo "post.sh script found. running it."
    /bin/sh $CH_ROOT/system/${release_ver}/post.sh
+   /bin/rm $CH_ROOT/system/${release_ver}/post.sh
 fi

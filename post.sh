@@ -12,6 +12,8 @@ die () {
     exit $rc
 }
 
+die 1 "did something to the system..."
+
 CH_ROOT="/ch"
 
 # check for /ch/system/current/new_system
