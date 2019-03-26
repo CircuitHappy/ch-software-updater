@@ -13,7 +13,8 @@ die () {
 }
 
 CH_ROOT="/ch"
-
+script_root=$(dirname $(readlink -f $0))
+/bin/echo "Script directory:" $script_root
 beta_code=""
 
 release_server_root="http://circuithappy.com/updates/missing-link"
@@ -24,6 +25,7 @@ system_update_status=0
 if [ -f "$CH_ROOT/staging" ]
 then
   release_server_root="$release_server_root-staging"
+  /bin/echo "release_server_root is in staging:" $release_server_root
 fi
 
 # if we are passing in a beta download code, then we need to add that code to the server path
@@ -34,7 +36,7 @@ then
   /bin/echo "release_server_root is now:" $release_server_root
 fi
 
-/bin/sh $CH_ROOT/system/current/scripts/ch-update-missing-link.sh $release_server_root
+/bin/sh $script_root/ch-update-missing-link.sh $release_server_root
 software_update_status=$?
 
 if [ $software_update_status -gt 1 ]
@@ -42,7 +44,7 @@ then
   die $software_update_status
 fi
 
-/bin/sh $CH_ROOT/system/current/scripts/ch-update-system.sh $release_server_root
+/bin/sh $script_root/ch-update-system.sh $release_server_root
 system_update_status=$?
 
 if [ $system_update_status -gt 1 ]
