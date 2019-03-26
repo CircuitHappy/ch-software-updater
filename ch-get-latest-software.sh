@@ -13,64 +13,56 @@ die () {
 }
 
 CH_ROOT="/ch"
+script_root=$(dirname $(readlink -f $0))
+/bin/echo "Script directory:" $script_root
+beta_code=""
 
-release_ver=`/usr/bin/wget -O- http://circuithappy.com/updates/missing-link/current.txt`
-/bin/echo "release version:" $release_ver
+release_server_root="http://circuithappy.com/updates/missing-link"
 
-if [ -d $CH_ROOT/${release_ver} ];
+software_update_status=0
+system_update_status=0
+
+if [ -f "$CH_ROOT/staging" ]
 then
-   die 1 "This system is at the latest version."
+  release_server_root="$release_server_root-staging"
+  /bin/echo "release_server_root is in staging:" $release_server_root
 fi
 
-/usr/bin/wget -O /tmp/missing-link-update-$release_ver.zip http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip
-if [ $? != 0 ]; 
+# if we are passing in a beta download code, then we need to add that code to the server path
+if [ ! -z "$1" ]
 then
-   die 2 "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip, bailing."
+  beta_code="$1"
+  release_server_root="$release_server_root/$1"
+  /bin/echo "release_server_root is now:" $release_server_root
 fi
 
-/usr/bin/wget -O /tmp/missing-link-update-$release_ver.zip.md5 http://circuithappy.com/updates/missing-link/missing-link-update-$release_ver.zip.md5
-if [ $? != 0 ]; 
+/bin/sh $script_root/ch-update-missing-link.sh $release_server_root
+software_update_status=$?
+
+if [ $software_update_status -gt 1 ]
 then
-   die 2 "wget returned a non 0 exit code trying to download missing-link-update-$release_ver.zip.md5, bailing."
+  die $software_update_status
 fi
 
-expected_md5sum=`/bin/cat /tmp/missing-link-update-$release_ver.zip.md5 | /usr/bin/awk '{print $1}'`
+/bin/sh $script_root/ch-update-system.sh $release_server_root
+system_update_status=$?
 
-if [ "x${expected_md5sum}" = "x" ];
+if [ $system_update_status -gt 1 ]
 then
-    die 3 "the md5sum from the server was missing or corrupt, bailing."
+  die $system_update_status
 fi
 
-actual_md5sum=`/usr/bin/md5sum /tmp/missing-link-update-$release_ver.zip | /usr/bin/awk '{print $1}'`
-
-if [ ${expected_md5sum} != ${actual_md5sum} ];
+#if both exit with a code of 1 that means there's no updates and no need to reboot
+if [ $system_update_status -eq 1 ] && [ $software_update_status -eq 1 ]
 then
-   die 3 "the md5sum on the zip didn't match expected, bailing."
+  die 1
 fi
 
-/usr/bin/unzip /tmp/missing-link-update-$release_ver.zip -d $CH_ROOT/ > /tmp/unzip.out 2>&1
-if [ $? != 0 ]; 
+#update the beta_code to the beta_code.txt, it will contain the beta_code or be blank, if it's a mainline build
+/bin/echo "$beta_code" > $CH_ROOT/beta_code.txt
+if [ $? != 0 ];
 then
-   die 4 "unzip returned a non 0 exit code trying to extract the update (check /tmp/unzip.out), bailing."
-fi
-
-/bin/rm $CH_ROOT/current 
-if [ $? != 0 ] && [ -L $CH_ROOT/current ];
-then
-    warn "this is bad, we couldn't remove the old current symlink "
-fi
-
-
-/bin/ln -s $CH_ROOT/$release_ver $CH_ROOT/current
-if [ $? != 0 ] && [ ! -L $CH_ROOT/current ];
-then
-    die 5 "unable to relink things, your system may be unusable after a reboot."
-fi
-
-/bin/echo $release_ver > $CH_ROOT/version.txt
-if [ $? != 0 ]; 
-then
-   die 6 "Could not update version number file."
+   die 6 "Could not write $CH_ROOT/beta_code.txt"
 fi
 
 if [ -f $CH_ROOT/${release_ver}/post.sh ];
